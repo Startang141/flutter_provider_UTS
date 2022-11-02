@@ -5,8 +5,6 @@ Challenge untuk UTS Kerjakan salah satu saja 100 :
     1. Tambahkan fitur untuk validasi input di tambah task.
     membuat file validation_item.dart sebagai provider, serta menambah kondisi pada setTaskName pada tasklist, mengubah listpage dan main.
     
-    ![t1](https://user-images.githubusercontent.com/90758763/199456112-908ec45e-629f-4a06-a996-476dfb1d4ff3.png)
-
     
     2. Tambahkan fitur untuk disable button tambah task jika validasi input masih error.
     menambah kondisi atau fitur pada OnPressed pada addTask
