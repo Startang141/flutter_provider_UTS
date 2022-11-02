@@ -1,17 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:provider_listview/service/tasklist.dart';
 
-class AddTaskPage extends StatelessWidget {
-  AddTaskPage({super.key});
+import '../models/task.dart';
+import '../service/tasklist.dart';
 
-  final TextEditingController _controller = TextEditingController();
+class EditTaskPage extends StatefulWidget {
+  const EditTaskPage({super.key, this.model});
+
+  final Task? model;
+
+  @override
+  State<EditTaskPage> createState() => _EditTaskPageState();
+}
+
+class _EditTaskPageState extends State<EditTaskPage> {
+  TextEditingController? controller;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = TextEditingController(text: widget.model?.name);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Tambah Task Baru"),
+        title: const Text("Edit Task Baru"),
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -22,7 +37,7 @@ class AddTaskPage extends StatelessWidget {
                 hintText: "Masukkan Task Baru",
                 errorText: context.watch<Tasklist>().taskName.error,
               ),
-              controller: _controller,
+              controller: controller,
               onChanged: (value) {
                 context.read<Tasklist>().onTaskNameChange(value);
               },
@@ -36,18 +51,24 @@ class AddTaskPage extends StatelessWidget {
                   child: ElevatedButton(
                     onPressed: context.watch<Tasklist>().isActive
                         ? () {
+                            final model = Task.fromMap({
+                              'name': controller?.text,
+                              'status': 0,
+                            });
                             context
                                 .read<Tasklist>()
-                                .setTaskName(_controller.text);
+                                .setTaskName(controller?.text);
                             if (context.read<Tasklist>().isValidated()) {
-                              context.read<Tasklist>().addNewTask(
-                                    _controller.text,
-                                  );
-                              Navigator.pop(context);
+                              context
+                                  .read<Tasklist>()
+                                  .editTask(model, widget.model!.name)
+                                  .then((value) {
+                                Navigator.pop(context, true);
+                              });
                             }
                           }
                         : null,
-                    child: const Text("Tambah Task Baru"),
+                    child: const Text("Edit Task"),
                   ),
                 ),
               ],
